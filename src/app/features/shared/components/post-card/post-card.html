@@ -1,1 +1,55 @@
-<p>post-card works!</p>
+<article class="post-card">
+  <div class="post-card__body">
+    <div class="post-card__meta">
+      <div class="author-chip">
+        <div class="author-avatar">{{ authorInitial }}</div>
+        <span class="author-name">{{ post.author.username }}</span>
+      </div>
+      <span class="meta-dot">·</span>
+      <time class="post-date">{{ formatDate(post.createdAt) }}</time>
+      <span class="meta-dot">·</span>
+      <span class="read-time">{{ readTime(post.content) }} min de leitura</span>
+    </div>
+
+    <div class="post-card__content">
+      <div class="post-card__text">
+        <h2 class="post-card__title">{{ post.title }}</h2>
+        <p class="post-card__excerpt">{{ excerpt(post.content) }}</p>
+
+        @if (post.tags?.length) {
+        <div class="post-card__tags">
+          @for (tag of post.tags!.slice(0, 3); track tag) {
+          <span class="tag">{{ tag }}</span>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="post-card__thumbnail" [class.post-card__thumbnail--empty]="!post.coverImageUrl">
+        @if (post.coverImageUrl) {
+        <img [src]="post.coverImageUrl" [alt]="post.title" />
+        } @else {
+        <div class="thumbnail-placeholder">✠</div>
+        }
+      </div>
+    </div>
+
+    <div class="post-card__footer">
+      <button class="upvote-btn" (click)="$event.stopPropagation()">
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 19V5M5 12l7-7 7 7" />
+        </svg>
+        {{ post.upvotes ?? 0 }}
+      </button>
+    </div>
+  </div>
+</article>

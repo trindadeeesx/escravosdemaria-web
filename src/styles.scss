@@ -1,1 +1,94 @@
-/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --bg: #f5efe6;
+  --bg-card: #ffffff;
+  --bg-subtle: #ede7dd;
+  --text: #1a1a1a;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+  --border: #e2d9ce;
+  --primary: #1d4ed8;
+  --primary-bg: #eff6ff;
+  --danger: #dc2626;
+  --success: #16a34a;
+
+  --nav-bg: #f0e8dc;
+  --nav-border: #d6c9b8;
+  --nav-text: #2c1a0e;
+  --nav-text-muted: #8a7060;
+  --nav-active-bg: #e2d5c3;
+
+  --gold: #b49b5a;
+}
+
+[data-theme="dark"] {
+  --bg: #0b1320;
+  --bg-card: #111827;
+  --bg-subtle: #1a2235;
+  --text: #e5e7eb;
+  --text-muted: #9ca3af;
+  --text-faint: #6b7280;
+  --border: #1f2937;
+  --primary: #60a5fa;
+  --primary-bg: #1e3a5f;
+  --danger: #f87171;
+  --success: #4ade80;
+
+  --nav-bg: #0d1f3c;
+  --nav-border: rgba(180, 155, 90, 0.25);
+  --nav-text: #e8d9a0;
+  --nav-text-muted: rgba(220, 200, 150, 0.55);
+  --nav-active-bg: rgba(180, 155, 90, 0.1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  transition:
+    background 0.2s,
+    color 0.2s;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}

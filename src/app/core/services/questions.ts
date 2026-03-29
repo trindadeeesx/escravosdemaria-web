@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Api, Page } from "./api";
+import { ApiService, Page } from "./api";
 import { Author } from "./blog";
 
 export interface Question {
@@ -23,8 +23,8 @@ export interface CreateQuestion {
 }
 
 @Injectable({ providedIn: "root" })
-export class Questions {
-  constructor(private api: Api) {}
+export class QuestionsService {
+  constructor(private api: ApiService) {}
 
   getAll(page = 0, size = 20): Observable<Page<Question>> {
     return this.api.get<Page<Question>>("/questions", { page, size });

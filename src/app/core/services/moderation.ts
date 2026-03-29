@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Api, Page } from "./api";
+import { ApiService, Page } from "./api";
 
 export interface PendingPost {
   id: string;
@@ -8,13 +8,13 @@ export interface PendingPost {
   content: string;
   type: "BLOG" | "FORUM" | "QUESTION";
   status: string;
-  author: { username: string; avatar: string };
+  author: { username: string; avatar?: string };
   createdAt: string;
 }
 
 @Injectable({ providedIn: "root" })
-export class Moderation {
-  constructor(private api: Api) {}
+export class ModerationService {
+  constructor(private api: ApiService) {}
 
   getPending(page = 0): Observable<Page<PendingPost>> {
     return this.api.get<Page<PendingPost>>("/moderation/pending", { page });
@@ -23,11 +23,9 @@ export class Moderation {
   approve(id: string): Observable<any> {
     return this.api.post(`/moderation/approve/${id}`, {});
   }
-
   reject(id: string): Observable<any> {
     return this.api.post(`/moderation/reject/${id}`, {});
   }
-
   close(id: string): Observable<any> {
     return this.api.post(`/moderation/close/${id}`, {});
   }

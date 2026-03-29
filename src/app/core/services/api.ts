@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { environment } from "../../../environments/environment";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { catchError, throwError, Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
+import { environment } from "../../../environments/environment";
 
 export interface Page<T> {
   content: T[];
@@ -10,27 +11,23 @@ export interface Page<T> {
   number: number;
 }
 
-@Injectable({
-  providedIn: "root",
-})
-export class Api {
+@Injectable({ providedIn: "root" })
+export class ApiService {
   private base = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
   get<T>(path: string, params?: Record<string, any>): Observable<T> {
-    let httpParams = new HttpParams();
-    if (params) Object.entries(params).forEach(([k, v]) => (httpParams = httpParams.set(k, v)));
+    let p = new HttpParams();
+    if (params) Object.entries(params).forEach(([k, v]) => (p = p.set(k, String(v))));
     return this.http
-      .get<T>(`${this.base}${path}`, { params: httpParams })
-      .pipe(catchError(this.handleError));
+      .get<T>(`${this.base}${path}`, { params: p })
+      .pipe(catchError((e) => throwError(() => e)));
   }
 
   post<T>(path: string, body: any): Observable<T> {
-    return this.http.post<T>(`${this.base}${path}`, body).pipe(catchError(this.handleError));
-  }
-
-  private handleError(err: any) {
-    return throwError(() => err);
+    return this.http
+      .post<T>(`${this.base}${path}`, body)
+      .pipe(catchError((e) => throwError(() => e)));
   }
 }

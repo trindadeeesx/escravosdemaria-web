@@ -1,1 +1,13 @@
-<p>admin-layout works!</p>
+<app-navbar />
+<div class="admin-wrap">
+  <aside class="admin-sidebar">
+    <div class="sidebar-title">Administração</div>
+    <nav>
+      <a routerLink="/admin/moderation" routerLinkActive="active">Moderação</a>
+      <a routerLink="/admin/bot" routerLinkActive="active">Bot</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <router-outlet />
+  </main>
+</div>

@@ -1,1 +1,51 @@
-<p>blog-list works!</p>
+<section class="blog-list">
+  <header class="blog-header">
+    <div class="blog-header-ornament">✠</div>
+    <h1 class="blog-header-title">Publicações</h1>
+    <p class="blog-header-sub">Reflexões, ladainhas e doutrina da Igreja</p>
+    <div class="blog-header-rule">
+      <span class="rule-line"></span>
+      <span class="rule-diamond"></span>
+      <span class="rule-line"></span>
+    </div>
+  </header>
+
+  @if (loading) {
+  <div class="skeletons">
+    @for (i of [1,2,3]; track i) {
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-text short"></div>
+        <div class="skeleton-text long"></div>
+        <div class="skeleton-text medium"></div>
+      </div>
+    </div>
+    }
+  </div>
+  } @else if (error) {
+  <div class="state-msg state-msg--error">
+    Erro ao carregar as publicações.
+    <button class="retry-btn" (click)="load()">Tentar novamente</button>
+  </div>
+  } @else if (!posts.length) {
+  <div class="state-msg">Nenhuma publicação ainda.</div>
+  } @else {
+  <div class="posts-grid">
+    @for (post of posts; track post.id) {
+    <app-post-card [post]="post" [featured]="false" />
+    }
+  </div>
+
+  @if (loadingMore) {
+  <div class="load-more-indicator">
+    <span class="spinner"></span>
+  </div>
+  } @if (!hasMore && posts.length > 1) {
+  <div class="end-of-feed">
+    <span class="rule-line"></span>
+    <span class="end-label">✠</span>
+    <span class="rule-line"></span>
+  </div>
+  } }
+</section>

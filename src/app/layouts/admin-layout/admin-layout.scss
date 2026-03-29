@@ -1,0 +1,52 @@
+.admin-wrap {
+  padding-top: 56px;
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 1.5rem 1rem;
+
+  .sidebar-title {
+    font-family: "Cinzel", serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    a {
+      font-family: "Inter", sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding: 7px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.15s;
+
+      &:hover {
+        color: var(--text);
+        background: var(--border);
+      }
+      &.active {
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+    }
+  }
+}
+
+.admin-main {
+  flex: 1;
+  padding: 2rem;
+  max-width: 900px;
+}

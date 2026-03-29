@@ -1,28 +1,31 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Auth } from '../../../core/auth/auth';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { AuthService } from "../../../core/auth/auth";
 
 @Component({
-  selector: 'app-callback',
-  imports: [],
-  templateUrl: './callback.html',
-  styleUrl: './callback.scss',
+  selector: "app-callback",
   standalone: true,
+  imports: [],
+  template: `
+    <div
+      style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:serif;color:var(--text-muted)"
+    >
+      Autenticando...
+    </div>
+  `,
 })
-export class Callback {
+export class Callback implements OnInit {
   constructor(
     private route: ActivatedRoute,
-    private auth: Auth,
+    private auth: AuthService,
   ) {}
 
   ngOnInit() {
-    const token = this.route.snapshot.queryParamMap.get('token');
-
+    const token = this.route.snapshot.queryParamMap.get("token");
     if (!token) {
       this.auth.logout();
       return;
     }
-
     this.auth.handleCallback(token);
   }
 }
