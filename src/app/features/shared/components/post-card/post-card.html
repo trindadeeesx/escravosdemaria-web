@@ -1,55 +1,64 @@
 <article class="post-card">
   <div class="post-card__body">
-    <div class="post-card__meta">
-      <div class="author-chip">
-        <div class="author-avatar">{{ authorInitial }}</div>
-        <span class="author-name">{{ post.author.username }}</span>
+    <header class="post-card__meta">
+      <div class="author">
+        <div class="author__avatar">{{ authorInitial }}</div>
+        <div class="author__info">
+          <span class="author__name">{{ post.author.username }}</span>
+          <span class="author__sep">·</span>
+          <time class="author__date">{{ formatDate(post.createdAt) }}</time>
+          <span class="author__sep">·</span>
+          <span class="author__read">{{ readTime(post.content) }} min</span>
+        </div>
       </div>
-      <span class="meta-dot">·</span>
-      <time class="post-date">{{ formatDate(post.createdAt) }}</time>
-      <span class="meta-dot">·</span>
-      <span class="read-time">{{ readTime(post.content) }} min de leitura</span>
-    </div>
+    </header>
 
-    <div class="post-card__content">
+    <div class="post-card__main">
       <div class="post-card__text">
         <h2 class="post-card__title">{{ post.title }}</h2>
         <p class="post-card__excerpt">{{ excerpt(post.content) }}</p>
-
-        @if (post.tags?.length) {
-        <div class="post-card__tags">
-          @for (tag of post.tags!.slice(0, 3); track tag) {
-          <span class="tag">{{ tag }}</span>
-          }
-        </div>
-        }
       </div>
 
-      <div class="post-card__thumbnail" [class.post-card__thumbnail--empty]="!post.coverImageUrl">
+      <!-- Thumbnail sempre presente -->
+      <div class="post-card__thumb" [class.post-card__thumb--placeholder]="!post.coverImageUrl">
         @if (post.coverImageUrl) {
-        <img [src]="post.coverImageUrl" [alt]="post.title" />
+        <img [src]="post.coverImageUrl" [alt]="post.title" loading="lazy" />
         } @else {
-        <div class="thumbnail-placeholder">✠</div>
+        <span class="post-card__thumb-cross">✠</span>
         }
       </div>
     </div>
 
-    <div class="post-card__footer">
-      <button class="upvote-btn" (click)="$event.stopPropagation()">
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+    <footer class="post-card__footer">
+      @if (post.tags?.length) {
+      <div class="post-card__tags">
+        @for (tag of post.tags!.slice(0, 3); track tag) {
+        <span class="tag">{{ tag }}</span>
+        }
+      </div>
+      }
+
+      <div class="post-card__actions">
+        <button
+          class="upvote"
+          [class.upvote--active]="upvoted()"
+          (click)="toggleUpvote($event)"
+          [attr.aria-label]="upvoted() ? 'Remover voto' : 'Votar'"
         >
-          <path d="M12 19V5M5 12l7-7 7 7" />
-        </svg>
-        {{ post.upvotes ?? 0 }}
-      </button>
-    </div>
+          <svg
+            class="upvote__icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 19V5M5 12l7-7 7 7" />
+          </svg>
+          <span class="upvote__count">{{ voteCount() }}</span>
+        </button>
+      </div>
+    </footer>
   </div>
 </article>

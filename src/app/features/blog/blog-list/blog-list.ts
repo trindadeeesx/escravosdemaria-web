@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from "@angular/core";
+import { Component, OnInit, OnDestroy, HostListener, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { BlogService, BlogPost } from "../../../core/services/blog";
 import { PostCardComponent } from "../../shared/components/post-card/post-card";
@@ -18,6 +18,18 @@ export class BlogList implements OnInit, OnDestroy {
   page = 0;
   hasMore = true;
   private readonly PAGE_SIZE = 10;
+
+  categories = [
+    { slug: "liturgia", label: "Liturgia", count: 12 },
+    { slug: "oracao", label: "Oração", count: 8 },
+    { slug: "doutrina", label: "Doutrina", count: 15 },
+    { slug: "espiritualidade", label: "Espiritualidade", count: 6 },
+    { slug: "santos", label: "Santos", count: 9 },
+  ];
+
+  topPosts = computed(() =>
+    [...this.posts].sort((a, b) => (b.upvotes ?? 0) - (a.upvotes ?? 0)).slice(0, 4),
+  );
 
   constructor(private blogService: BlogService) {}
 

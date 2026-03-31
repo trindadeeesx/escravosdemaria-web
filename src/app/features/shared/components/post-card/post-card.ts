@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { BlogPost } from "../../../../core/services/blog";
 
@@ -9,9 +9,21 @@ import { BlogPost } from "../../../../core/services/blog";
   templateUrl: "./post-card.html",
   styleUrls: ["./post-card.scss"],
 })
-export class PostCardComponent {
+export class PostCardComponent implements OnInit {
   @Input({ required: true }) post!: BlogPost;
-  @Input() featured = false;
+
+  upvoted = signal(false);
+  voteCount = signal(0);
+
+  ngOnInit() {
+    this.voteCount.set(this.post.upvotes ?? 0);
+  }
+
+  toggleUpvote(event: Event) {
+    event.stopPropagation();
+    this.upvoted.update((v) => !v);
+    this.voteCount.update((v) => (this.upvoted() ? v + 1 : v - 1));
+  }
 
   formatDate(iso: string): string {
     return new Date(iso).toLocaleDateString("pt-BR", {
@@ -22,7 +34,7 @@ export class PostCardComponent {
   }
 
   readTime(content: string): number {
-    return Math.max(1, Math.ceil(content.split(" ").length / 200));
+    return Math.max(1, Math.ceil(content.replace(/<[^>]*>/g, "").split(" ").length / 200));
   }
 
   excerpt(content: string, limit = 160): string {
