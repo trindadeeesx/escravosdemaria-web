@@ -1,0 +1,80 @@
+<article class="post-card">
+	<div class="post-card__body">
+
+		<!-- Meta do autor -->
+		<header class="post-card__meta">
+			<div class="author">
+				<div class="author__avatar" [style.background]="post.author.displayColor || null">
+					{{ authorInitial }}
+				</div>
+				<div class="author__info">
+					<span class="author__name">{{ post.author.globalName || post.author.username }}</span>
+					<span class="author__sep">·</span>
+					<time class="author__date" [dateTime]="post.createdAt">{{ formatDate(post.createdAt) }}</time>
+					<span class="author__sep">·</span>
+					<span class="author__read">{{ readTime(post.content) }} min</span>
+				</div>
+			</div>
+			<span class="post-category-badge">{{ post.category.name }}</span>
+		</header>
+
+		<!-- Corpo -->
+		<div class="post-card__main">
+			<div class="post-card__text">
+				<h2 class="post-card__title">{{ post.title }}</h2>
+				<p class="post-card__excerpt">{{ excerpt(post.content) }}</p>
+			</div>
+
+			<!-- Thumbnail -->
+			<div
+				class="post-card__thumb"
+				[class.post-card__thumb--placeholder]="!post.coverImageUrl"
+			>
+				@if (post.coverImageUrl) {
+					<img [src]="post.coverImageUrl" [alt]="post.title" loading="lazy" />
+				} @else {
+					<span class="post-card__thumb-cross">✠</span>
+				}
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<footer class="post-card__footer">
+			@if (post.tags?.length) {
+				<div class="post-card__tags">
+					@for (tag of post.tags!.slice(0, 3); track tag) {
+						<span class="tag">{{ tag }}</span>
+					}
+				</div>
+			}
+
+			<div class="post-card__actions">
+				<!-- Upvote — o contador fica DENTRO do botão -->
+				<button
+					class="vote-btn"
+					[class.vote-btn--active]="userVote() === 1"
+					(click)="vote(1, $event)"
+					aria-label="Upvote"
+				>
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+						<path d="M12 19V5M5 12l7-7 7 7"/>
+					</svg>
+					<span class="vote-btn__count">{{ voteCount() }}</span>
+				</button>
+
+				<!-- Downvote -->
+				<button
+					class="vote-btn vote-btn--down"
+					[class.vote-btn--active-down]="userVote() === -1"
+					(click)="vote(-1, $event)"
+					aria-label="Downvote"
+				>
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+						<path d="M12 5v14M19 12l-7 7-7-7"/>
+					</svg>
+				</button>
+			</div>
+		</footer>
+
+	</div>
+</article>

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { ApiService, Page } from "./api";
-import { Author } from "./blog";
+import { ApiService, Page } from "./api.service";
+import { Author } from "../models";
 
 export interface ForumPost {
   id: string;

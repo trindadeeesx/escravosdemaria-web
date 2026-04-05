@@ -1,0 +1,341 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     HOME — Layout editorial 3 colunas
+     ═══════════════════════════════════════════════════════════════════════ -->
+
+<!-- Hero com carrossel -->
+<section class="hero">
+	<div class="carousel" aria-label="Carrossel de imagens">
+		<div class="carousel__track" [style.transform]="'translateX(-' + (activeSlide * 100) + '%)'">
+			@for (slide of carouselSlides; track slide.id) {
+				<div class="carousel__slide">
+					@if (slide.imageUrl) {
+						<img class="carousel__img" [src]="slide.imageUrl" [alt]="slide.alt" loading="eager" />
+					} @else {
+						<div class="carousel__placeholder">
+							<div class="carousel__placeholder-pattern"></div>
+							<span class="carousel__placeholder-cross">✠</span>
+						</div>
+					}
+					<div class="carousel__overlay"></div>
+				</div>
+			}
+		</div>
+
+		@if (carouselSlides.length > 1) {
+			<button class="carousel__btn carousel__btn--prev" (click)="prevSlide()" aria-label="Slide anterior">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+					<path d="M15 18l-6-6 6-6"/>
+				</svg>
+			</button>
+			<button class="carousel__btn carousel__btn--next" (click)="nextSlide()" aria-label="Próximo slide">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+					<path d="M9 18l6-6-6-6"/>
+				</svg>
+			</button>
+			<div class="carousel__dots">
+				@for (slide of carouselSlides; track slide.id; let i = $index) {
+					<button class="carousel__dot"
+					        [class.carousel__dot--active]="activeSlide === i"
+					        (click)="goToSlide(i)"
+					        [attr.aria-label]="'Ir para slide ' + (i + 1)"></button>
+				}
+			</div>
+		}
+	</div>
+
+	<!-- Conteúdo sobre o carrossel -->
+	<div class="hero__content container">
+		<p class="hero__eyebrow">
+			<span class="ornament">✠</span> Totus Tuus
+		</p>
+		<h1 class="hero__title">Escravos<br />de Maria</h1>
+		<p class="hero__tagline">
+			Uma comunidade de fiéis tradicionais dedicada à<br />
+			formação espiritual, à doutrina e à vida contemplativa.
+		</p>
+		<div class="hero__actions">
+			<a routerLink="/blog" class="hero__cta">
+				Ler publicações
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M5 12h14M12 5l7 7-7 7"/>
+				</svg>
+			</a>
+			<a routerLink="/rosario" class="hero__cta hero__cta--ghost">Rezar o Rosário</a>
+		</div>
+	</div>
+
+	<div class="hero__date-badge">
+		<span class="hero__date-label">Hoje</span>
+		<span class="hero__date-value">{{ todayFormatted }}</span>
+	</div>
+</section>
+
+<!-- Corpo principal 3 colunas -->
+<div class="home-body container">
+
+	<!-- COLUNA ESQUERDA — Espiritualidade diária -->
+	<aside class="col-left">
+
+		<!-- Oração do dia -->
+		<div class="widget widget--prayer">
+			<div class="widget__header">
+				<span class="widget__icon">🙏</span>
+				<span class="widget__title">Oração do Dia</span>
+			</div>
+			<blockquote class="prayer-text">
+				{{ homeService.homeData()?.prayerOfTheDay?.text || '"Vinde, ó Espírito Santo, enchei os corações dos vossos fiéis."' }}
+			</blockquote>
+			<span class="prayer-source">
+				— {{ homeService.homeData()?.prayerOfTheDay?.author || 'Sequência de Pentecostes' }}
+			</span>
+		</div>
+
+		<!-- Santo do dia -->
+		<div class="widget">
+			<div class="widget__header">
+				<span class="widget__icon">✦</span>
+				<span class="widget__title">Santo do Dia</span>
+			</div>
+			<div class="saint-card">
+				<div class="saint-card__cross">✠</div>
+				<div class="saint-card__info">
+					<span class="saint-card__name">
+						{{ homeService.homeData()?.saintToday?.name || 'São Isidoro Lavrador' }}
+					</span>
+					<span class="saint-card__feast">
+						{{ homeService.homeData()?.saintToday?.feastDate || '4 de abril · Confessor' }}
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Liturgia hoje -->
+		<div class="widget">
+			<div class="widget__header">
+				<span class="widget__icon">📖</span>
+				<span class="widget__title">Liturgia</span>
+			</div>
+			<div class="liturgy-info">
+				<div class="liturgy-info__time">
+					{{ homeService.homeData()?.liturgyToday?.title || 'Tempo Comum' }}
+				</div>
+				<div class="liturgy-info__color">
+					<span class="liturgy-dot liturgy-dot--green"></span>
+					Cor litúrgica: {{ homeService.homeData()?.liturgyToday?.color || 'Verde' }}
+				</div>
+				<a routerLink="/rosario" class="liturgy-link">Ver Rosário de hoje →</a>
+			</div>
+		</div>
+
+		<!-- Últimos Papas -->
+		<div class="widget">
+			<div class="widget__header">
+				<span class="widget__icon">⚜</span>
+				<span class="widget__title">Magistério Recente</span>
+			</div>
+			<div class="pope-list">
+				@for (pope of homeService.homeData()?.lastPopes; track pope.name) {
+					<div class="pope-item">
+						<span class="pope-item__dates">{{ pope.pontificate || pope.year }}</span>
+						<span class="pope-item__name">{{ pope.name }}</span>
+					</div>
+				} @empty {
+					<div class="pope-item"><span class="pope-item__name">Carregando...</span></div>
+				}
+			</div>
+		</div>
+
+	</aside>
+
+	<!-- COLUNA CENTRAL — Conteúdo principal -->
+	<main class="col-center">
+
+		<!-- Publicações recentes -->
+		<section class="section">
+			<div class="section__header">
+				<h2 class="section__title">Publicações Recentes</h2>
+				<a routerLink="/blog" class="section__link">Ver todas →</a>
+			</div>
+
+			@if (homeService.loading()) {
+				<div class="skeleton-list">
+					@for (i of [1,2,3]; track i) {
+						<div class="skeleton-card">
+							<div class="sk sk--sm"></div>
+							<div class="sk sk--lg"></div>
+							<div class="sk sk--md"></div>
+						</div>
+					}
+				</div>
+			} @else if (homeService.homeData()?.recentBlogPosts?.length) {
+				<!-- Post destaque -->
+				@if (featuredPost) {
+					<article class="featured-post" [routerLink]="['/blog', featuredPost.id]">
+						<div class="featured-post__thumb">
+							@if (featuredPost.coverImageUrl) {
+								<img [src]="featuredPost.coverImageUrl" [alt]="featuredPost.title" loading="lazy" />
+							} @else {
+								<div class="featured-post__placeholder">✠</div>
+							}
+							<span class="featured-post__badge">{{ featuredPost.category.name }}</span>
+						</div>
+						<div class="featured-post__body">
+							<div class="post-meta">
+								<span class="post-meta__author">{{ featuredPost.author.globalName || featuredPost.author.username }}</span>
+								<span class="post-meta__dot">·</span>
+								<time class="post-meta__date">{{ formatDate(featuredPost.createdAt) }}</time>
+								<span class="post-meta__dot">·</span>
+								<span>{{ readTime(featuredPost.content) }} min</span>
+							</div>
+							<h3 class="featured-post__title">{{ featuredPost.title }}</h3>
+							<p class="featured-post__excerpt">{{ excerpt(featuredPost.content, 160) }}</p>
+						</div>
+					</article>
+				}
+
+				<!-- Grid posts secundários -->
+				<div class="posts-grid">
+					@for (post of secondaryPosts; track post.id) {
+						<article class="post-card-compact" [routerLink]="['/blog', post.id]">
+							<div class="post-card-compact__thumb">
+								@if (post.coverImageUrl) {
+									<img [src]="post.coverImageUrl" [alt]="post.title" loading="lazy" />
+								} @else {
+									<div class="post-card-compact__placeholder">✠</div>
+								}
+							</div>
+							<div class="post-card-compact__body">
+								<span class="post-category">{{ post.category.name }}</span>
+								<h4 class="post-card-compact__title">{{ post.title }}</h4>
+								<div class="post-meta post-meta--sm">
+									<time>{{ formatDate(post.createdAt) }}</time>
+									<span>·</span>
+									<span>↑ {{ post.upvotes }}</span>
+								</div>
+							</div>
+						</article>
+					}
+				</div>
+			} @else {
+				<p class="empty-state">Nenhuma publicação recente.</p>
+			}
+		</section>
+
+		<!-- Divisor litúrgico -->
+		<div class="liturgy-divider">
+			<span class="rule__line"></span>
+			<span class="liturgy-divider__ornament">✠ Fórum da Comunidade ✠</span>
+			<span class="rule__line"></span>
+		</div>
+
+		<!-- Em Debate -->
+		<section class="section">
+			<div class="section__header">
+				<h2 class="section__title">Em Debate</h2>
+				<a routerLink="/forum" class="section__link">Ver fórum →</a>
+			</div>
+			<div class="forum-preview">
+				@for (post of trendingForum; track post.id) {
+					<div class="forum-thread" [routerLink]="['/forum', post.id]">
+						<div class="forum-thread__votes">
+							<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+								<path d="M12 19V5M5 12l7-7 7 7"/>
+							</svg>
+							{{ post.upvotes || 0 }}
+						</div>
+						<div class="forum-thread__body">
+							<h4 class="forum-thread__title">{{ post.title }}</h4>
+							<div class="forum-thread__meta">
+								<span>{{ post.author?.globalName || post.author?.username }}</span>
+								<span>·</span>
+								<time>{{ formatDate(post.createdAt) }}</time>
+							</div>
+						</div>
+					</div>
+				} @empty {
+					<p class="empty-state">Nenhum debate em destaque no momento.</p>
+				}
+			</div>
+		</section>
+
+	</main>
+
+	<!-- COLUNA DIREITA — Comunidade -->
+	<aside class="col-right">
+
+		<!-- Widget Comunidade Discord -->
+		<div class="widget widget--community">
+			<div class="widget__header">
+				<span class="widget__icon">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.101 18.08.118 18.1.136 18.112a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+					</svg>
+				</span>
+				<span class="widget__title">Comunidade Viva</span>
+			</div>
+
+			<div class="community-stats">
+				<div class="members-count">
+					<span class="big-number">{{ homeService.homeData()?.discordMemberCount || '1.247' }}</span>
+					<span class="members-label">membros</span>
+				</div>
+				<div class="online-indicator">
+					<span class="online-dot"></span>
+					<span>Online agora</span>
+				</div>
+			</div>
+
+			<p class="community-text">
+				Junte-se a fiéis tradicionais para orações diárias, estudos doutrinários e formação espiritual profunda.
+			</p>
+
+			<a class="btn-discord"
+			   [href]="homeService.homeData()?.discordInviteLink || 'https://discord.gg/9uMhvKqCA'"
+			   target="_blank"
+			   rel="noopener">
+				Entrar no Discord
+				<span class="arrow">→</span>
+			</a>
+		</div>
+
+		<!-- Última Dúvida Respondida -->
+		<div class="widget">
+			<div class="widget__header">
+				<span class="widget__icon">❓</span>
+				<span class="widget__title">Última Dúvida</span>
+			</div>
+			@if (homeService.homeData()?.lastAnsweredQuestion) {
+				<div class="question-item"
+				     [routerLink]="['/questions', homeService.homeData()!.lastAnsweredQuestion.id]">
+					<span class="question-item__badge question-item__badge--open">Respondida</span>
+					<span class="question-item__title">
+						{{ homeService.homeData()!.lastAnsweredQuestion.title }}
+					</span>
+				</div>
+			} @else {
+				<p class="empty-state">Ainda sem dúvidas respondidas.</p>
+			}
+			<a routerLink="/questions" class="widget__footer-link">Ver todas →</a>
+		</div>
+
+		<!-- Citação patrística -->
+		<div class="widget widget--quote">
+			<blockquote class="patristic-quote">
+				"Nossa alma foi feita para Vós, ó Senhor, e vive inquieta enquanto não repousa em Vós."
+			</blockquote>
+			<cite class="patristic-cite">— Santo Agostinho, Confissões I, 1</cite>
+		</div>
+
+	</aside>
+
+</div>
+
+<!-- Footer -->
+<footer class="home-footer">
+	<div class="container">
+		<span class="home-footer__text">
+			<span class="ornament">✠</span>
+			Escravos de Maria · <em>Sub tuum praesidium</em>
+		</span>
+	</div>
+</footer>

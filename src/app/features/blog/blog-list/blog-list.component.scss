@@ -1,0 +1,380 @@
+@use "../../../../styles/variables" as *;
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.blog-header {
+	padding: $space-16 0 $space-10;
+	text-align: center;
+}
+
+.blog-header__eyebrow {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: $space-2;
+	font-family: $font-display;
+	font-size: 0.6rem;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: var(--gold);
+	margin-bottom: $space-4;
+}
+
+.blog-header__title {
+	font-family: $font-serif;
+	font-size: clamp(2rem, 4vw, 3rem);
+	font-weight: 900;
+	letter-spacing: -0.03em;
+	color: var(--text);
+	margin-bottom: $space-3;
+	line-height: 1.1;
+}
+
+.blog-header__sub {
+	font-family: $font-garamond;
+	font-style: italic;
+	font-size: 1.1rem;
+	color: var(--text-muted);
+	max-width: 460px;
+	margin: 0 auto;
+	line-height: 1.6;
+}
+
+// ─── Filtros — sem pill, estilo aba de jornal ────────────────────────────────
+.blog-filters {
+	border-bottom: 1px solid var(--border);
+	margin-bottom: $space-10;
+}
+
+.filter-tabs {
+	display: flex;
+	gap: 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar { display: none; }
+}
+
+.filter-tab {
+	display: flex;
+	align-items: center;
+	gap: $space-2;
+	padding: $space-3 $space-4;
+	border-radius: 0; // zero — aba plana
+	border: none;
+	border-bottom: 2px solid transparent;
+	background: transparent;
+	font-family: $font-display;
+	font-size: 0.6rem;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	cursor: pointer;
+	white-space: nowrap;
+	transition: color $transition-fast, border-color $transition-fast;
+	margin-bottom: -1px; // alinha com o border-bottom do container
+
+	&:hover {
+		color: var(--text);
+		border-bottom-color: var(--border-strong);
+	}
+
+	&--active {
+		color: var(--gold);
+		border-bottom-color: var(--gold);
+		font-weight: 600;
+
+		.filter-tab__count { color: var(--gold); opacity: 0.6; }
+
+		&:hover {
+			color: var(--gold);
+			border-bottom-color: var(--gold);
+		}
+	}
+}
+
+.filter-tab__count {
+	font-size: 0.62rem;
+	color: var(--text-faint);
+}
+
+// ─── Layout blog ──────────────────────────────────────────────────────────────
+.blog-body {
+	display: grid;
+	grid-template-columns: 1fr 272px;
+	gap: $space-10;
+	align-items: start;
+	padding-bottom: $space-20;
+
+	@media (max-width: 960px) {
+		grid-template-columns: 1fr;
+		.blog-sidebar { display: none; }
+	}
+}
+
+.posts-feed {
+	display: flex;
+	flex-direction: column;
+	gap: $space-3; // menos gap — mais denso, jornalístico
+}
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+.blog-sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: $space-4;
+	position: sticky;
+	top: calc($navbar-height + 24px);
+}
+
+.sidebar-widget {
+	background: var(--bg-card);
+	border: 1px solid var(--border-soft);
+	border-radius: $radius-md; // 4px
+	padding: $space-5;
+
+	&--discord {
+		background: linear-gradient(135deg, #5865f2, #4752c4);
+		border: none;
+		color: #fff;
+
+		.sidebar-widget__title { color: rgba(255,255,255,0.7); }
+
+		p {
+			font-family: $font-sans;
+			font-size: 0.8rem;
+			color: rgba(255,255,255,0.8);
+			line-height: 1.55;
+			margin-bottom: $space-4;
+		}
+	}
+}
+
+.sidebar-widget__title {
+	font-family: $font-display;
+	font-size: 0.56rem;
+	font-weight: 600;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--text-faint);
+	padding-bottom: $space-3;
+	border-bottom: 1px solid var(--border-soft);
+	margin-bottom: $space-4;
+}
+
+// Top posts
+.sidebar-top-post {
+	display: flex;
+	align-items: flex-start;
+	gap: $space-3;
+	padding: $space-3 0;
+	border-bottom: 1px solid var(--border-soft);
+	cursor: pointer;
+	transition: $transition-fast;
+
+	&:last-child { border: none; padding-bottom: 0; }
+	&:hover .sidebar-top-post__title { color: var(--gold); }
+}
+
+.sidebar-top-post__num {
+	font-family: $font-serif;
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: var(--text-faint);
+	line-height: 1;
+	min-width: 22px;
+	flex-shrink: 0;
+}
+
+.sidebar-top-post__title {
+	font-family: $font-serif;
+	font-size: 0.83rem;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--text);
+	transition: color $transition-fast;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+// Categorias
+.sidebar-cats { display: flex; flex-direction: column; gap: 1px; }
+
+.sidebar-cat {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: $space-2 $space-2;
+	border-radius: $radius-sm; // 3px
+	background: none;
+	border: none;
+	cursor: pointer;
+	transition: $transition-fast;
+	text-align: left;
+
+	span:first-child {
+		font-family: $font-sans;
+		font-size: 0.8rem;
+		color: var(--text-muted);
+	}
+
+	&:hover {
+		background: var(--bg-subtle);
+		span:first-child { color: var(--text); }
+	}
+
+	&--active {
+		background: var(--gold-bg);
+		span:first-child { color: var(--gold); font-weight: 600; }
+
+		.sidebar-cat__count {
+			background: rgba(180, 148, 58, 0.12);
+			border-color: rgba(180, 148, 58, 0.2);
+			color: var(--gold);
+		}
+	}
+}
+
+.sidebar-cat__count {
+	font-family: $font-sans;
+	font-size: 0.65rem;
+	font-weight: 500;
+	color: var(--text-faint);
+	background: var(--bg-subtle);
+	border: 1px solid var(--border-soft);
+	padding: 1px 6px;
+	border-radius: $radius-xs; // 2px — quase quadrado
+}
+
+// Discord button
+.btn-discord {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: $space-2;
+	width: 100%;
+	padding: $space-3;
+	border-radius: $radius-sm; // 3px
+	background: rgba(255,255,255,0.14);
+	border: 1px solid rgba(255,255,255,0.18);
+	color: #fff;
+	font-family: $font-sans;
+	font-size: 0.78rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background $transition-fast;
+
+	&:hover { background: rgba(255,255,255,0.22); }
+}
+
+// ─── Estados ─────────────────────────────────────────────────────────────────
+.state-message {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: $space-4;
+	padding: $space-16 $space-8;
+	text-align: center;
+
+	.ornament { font-size: 1.4rem; }
+	p { font-family: $font-garamond; font-style: italic; color: var(--text-muted); }
+	&--error p { color: var(--danger); }
+}
+
+.retry-btn {
+	font-family: $font-sans;
+	font-size: 0.78rem;
+	font-weight: 500;
+	color: var(--gold);
+	border: 1px solid var(--gold);
+	border-radius: $radius-sm; // 3px
+	padding: $space-2 $space-4;
+	cursor: pointer;
+	transition: $transition-fast;
+	background: none;
+
+	&:hover { background: var(--gold-bg); }
+}
+
+.load-more-spinner {
+	display: flex;
+	justify-content: center;
+	padding: $space-6;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	border: 1.5px solid var(--border);
+	border-top-color: var(--gold);
+	border-radius: 50%;
+	animation: spin 0.7s linear infinite;
+}
+
+.feed-end {
+	display: flex;
+	align-items: center;
+	gap: $space-4;
+	padding: $space-6 0;
+
+	.rule__line { flex: 1; height: 1px; background: var(--border); }
+}
+
+.feed-end__ornament {
+	font-family: $font-display;
+	font-size: 0.52rem;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--gold);
+	opacity: 0.55;
+	white-space: nowrap;
+}
+
+// ─── Skeletons ────────────────────────────────────────────────────────────────
+@keyframes shimmer {
+	0%   { background-position: -400px 0; }
+	100% { background-position:  400px 0; }
+}
+
+.skeleton-card {
+	background: var(--bg-card);
+	border: 1px solid var(--border-soft);
+	border-radius: $radius-md;
+	padding: $space-5 $space-6;
+	display: flex;
+	align-items: center;
+	gap: $space-6;
+}
+
+.skeleton-card__body {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: $space-3;
+}
+
+.skeleton-card__thumb {
+	width: 116px;
+	height: 78px;
+	border-radius: $radius-sm;
+	background: var(--bg-subtle);
+	flex-shrink: 0;
+}
+
+.sk {
+	border-radius: $radius-xs;
+	background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-soft) 50%, var(--bg-subtle) 75%);
+	background-size: 400px 100%;
+	animation: shimmer 1.4s infinite;
+
+	&--sm   { height: 11px; width: 35%; }
+	&--lg   { height: 18px; width: 85%; }
+	&--md   { height: 13px; width: 65%; }
+	&--full { height: 13px; width: 100%; }
+}

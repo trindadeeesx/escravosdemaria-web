@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { ApiService, Page } from "./api";
+import { ApiService, Page } from "./api.service";
 
 export interface PendingPost {
   id: string;

@@ -1,70 +1,82 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap");
+// ═══════════════════════════════════════════════════════════════════════════════
+// ESCRAVOS DE MARIA — Design System Variables
+// Estética: editorial premium / formal — menos arredondado, mais impresso
+// ═══════════════════════════════════════════════════════════════════════════════
 
-$font-serif: "Playfair Display", Georgia, serif;
-$font-sans: "Inter", system-ui, sans-serif;
-$font-garamond: "EB Garamond", Georgia, serif;
+// ─── Tipografia ───────────────────────────────────────────────────────────────
+$font-serif:    "Playfair Display", Georgia, serif;
+$font-garamond: "EB Garamond", Garamond, "Times New Roman", serif;
+$font-sans:     "Inter", system-ui, sans-serif;
+$font-display:  "Cinzel", "Trajan Pro", serif;
 
-// Modo claro
-$cream-50: #fdf8f2;
-$cream-100: #f5efe6;
-$cream-200: #ede4d8;
-$cream-300: #ddd0c0;
+// ─── Paleta base (tons creme / tinta) ────────────────────────────────────────
+$cream-50:  #fdfcf8;
+$cream-100: #f9f6ef;
+$cream-200: #f2ece0;
+$cream-300: #e5dac8;
+$cream-400: #d4c4a8;
 
-$brown-400: #a08060;
-$brown-500: #7a5c3e;
-$brown-600: #5c3d20;
+$ink-300:   #a8a098;
+$ink-400:   #8c8278;
+$ink-500:   #6b6258;
+$ink-700:   #3d3530;
+$ink-800:   #2a2218;
+$ink-900:   #1a1208;
 
-$gold-300: #d4b07a;
-$gold-400: #b49b5a;
-$gold-500: #8a7040;
+// ─── Paleta escura (navy) ─────────────────────────────────────────────────────
+$navy-950: #0d0f14;
+$navy-900: #111318;
+$navy-800: #181b22;
+$navy-700: #1e2230;
 
-$ink-900: #1a1410;
-$ink-800: #2c2420;
-$ink-700: #3d3028;
-$ink-500: #6b5a4e;
-$ink-400: #8a7a70;
-$ink-300: #b0a090;
-$ink-200: #d0c4b8;
+$dark-text:        #e8e2d8;
+$dark-text-muted:  #9a9288;
+$dark-text-faint:  #5a5450;
+$dark-border:      #2c2e38;
+$dark-border-soft: #1e2028;
 
-// Modo escuro
-$navy-950: #060d18;
-$navy-900: #0b1320;
-$navy-800: #111827;
-$navy-700: #1a2535;
-$navy-600: #1f3050;
-$navy-500: #2a4070;
+// ─── Ouro litúrgico ───────────────────────────────────────────────────────────
+$gold-200: #f0e4c0;
+$gold-300: #d4ad60;
+$gold-400: #b8943a;
+$gold-500: #9a7a28;
 
-$dark-text: #e8e0d5;
-$dark-text-muted: #9a9080;
-$dark-text-faint: #6a6058;
-$dark-border: #1f2937;
-$dark-border-soft: #2a3545;
+// ─── Border radius — editorial/formal ────────────────────────────────────────
+// Princípio: nada mais arredondado do que precisa ser.
+// Publicações impressas não têm cantos arredondados.
+$radius-xs:   2px;   // badges, chips, tags mínimas
+$radius-sm:   3px;   // inputs, botões pequenos
+$radius-md:   4px;   // botões, cards pequenos
+$radius-lg:   6px;   // cards principais, modais
+$radius-xl:   8px;   // modais grandes, featured cards
+$radius-pill: 3px;   // substituir 100px por isto nos "pills" — menos bolha
 
-// Tokens de semantica
-$space-1: 4px;
-$space-2: 8px;
-$space-3: 12px;
-$space-4: 16px;
-$space-5: 20px;
-$space-6: 24px;
-$space-8: 32px;
+// ─── Espaçamento ─────────────────────────────────────────────────────────────
+$space-1:  4px;
+$space-2:  8px;
+$space-3:  12px;
+$space-4:  16px;
+$space-5:  20px;
+$space-6:  24px;
+$space-8:  32px;
 $space-10: 40px;
 $space-12: 48px;
 $space-16: 64px;
+$space-20: 80px;
+$space-24: 96px;
 
-// Radius
-$radius-sm: 4px;
-$radius-md: 6px;
-$radius-lg: 10px;
-$radius-xl: 16px;
+// ─── Sombras — mais sutis, estilo editorial ───────────────────────────────────
+// Sombra pesada = SaaS/Material. Editorial = quase sem sombra, borda faz o trabalho.
+$shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md:   0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+$shadow-lift: 0 4px 16px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.05);
 
-// Sombras
-$shadow-sm: 0 1px 3px rgba(26, 20, 16, 0.06);
-$shadow-md: 0 4px 16px rgba(26, 20, 16, 0.08);
-$shadow-lg: 0 8px 32px rgba(26, 20, 16, 0.12);
-$shadow-lift: 0 6px 24px rgba(26, 20, 16, 0.11);
+// ─── Transições ───────────────────────────────────────────────────────────────
+$transition-fast:   all 0.15s ease;
+$transition-smooth: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow:   all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 
-// Transições
-$transition-fast: all 0.15s ease;
-$transition-base: all 0.22s ease;
-$transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+// ─── Layout ───────────────────────────────────────────────────────────────────
+$navbar-height: 60px;
+$content-max:   1140px;
+$content-wide:  1400px;

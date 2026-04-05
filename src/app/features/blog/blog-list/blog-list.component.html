@@ -1,0 +1,136 @@
+<section class="blog">
+
+	<!-- Header editorial -->
+	<header class="blog-header">
+		<div class="container">
+			<p class="blog-header__eyebrow">
+				<span class="ornament">✠</span> Publicações
+			</p>
+			<h1 class="blog-header__title">Reflexões & Doutrina</h1>
+			<p class="blog-header__sub">
+				Textos de formação espiritual, ladainhas e meditações da Igreja Tradicional
+			</p>
+			<div class="rule" style="margin-top: 1.5rem;">
+				<span class="rule__line"></span>
+				<span class="rule__diamond"></span>
+				<span class="rule__line"></span>
+			</div>
+		</div>
+	</header>
+
+	<!-- Filtros / categorias -->
+	<div class="blog-filters">
+		<div class="container">
+			<div class="filter-tabs">
+				<button
+					class="filter-tab"
+					[class.filter-tab--active]="!activeCategory"
+					(click)="setCategory(null)"
+				>Todos</button>
+				@for (cat of categories; track cat.slug) {
+					<button
+						class="filter-tab"
+						[class.filter-tab--active]="activeCategory === cat.slug"
+						(click)="setCategory(cat.slug)"
+					>{{ cat.label }} <span class="filter-tab__count">{{ cat.count }}</span></button>
+				}
+			</div>
+		</div>
+	</div>
+
+	<!-- Layout: lista + sidebar -->
+	<div class="blog-body container">
+
+		<!-- Lista de posts -->
+		<div class="posts-feed">
+
+			@if (loading) {
+				@for (i of [1,2,3,4]; track i) {
+					<div class="skeleton-card">
+						<div class="skeleton-card__body">
+							<div class="sk sk--sm"></div>
+							<div class="sk sk--lg"></div>
+							<div class="sk sk--md"></div>
+							<div class="sk sk--full"></div>
+						</div>
+						<div class="skeleton-card__thumb"></div>
+					</div>
+				}
+			} @else if (error) {
+				<div class="state-message state-message--error">
+					<span>Erro ao carregar as publicações.</span>
+					<button class="retry-btn" (click)="load()">Tentar novamente</button>
+				</div>
+			} @else if (!filteredPosts.length) {
+				<div class="state-message">
+					<span class="ornament">✠</span>
+					<p>Nenhuma publicação encontrada nesta categoria.</p>
+				</div>
+			} @else {
+				@for (post of filteredPosts; track post.id) {
+					<app-post-card [post]="post" />
+				}
+
+				<!-- Indicador carregando mais -->
+				@if (loadingMore) {
+					<div class="load-more-spinner">
+						<span class="spinner"></span>
+					</div>
+				}
+
+				<!-- Fim do feed -->
+				@if (!hasMore && filteredPosts.length > 1) {
+					<div class="feed-end">
+						<span class="rule__line"></span>
+						<span class="feed-end__ornament">✠ Fim das publicações ✠</span>
+						<span class="rule__line"></span>
+					</div>
+				}
+			}
+
+		</div>
+
+		<!-- Sidebar -->
+		<aside class="blog-sidebar">
+
+			<!-- Mais lidas -->
+			<div class="sidebar-widget">
+				<div class="sidebar-widget__title">Mais Lidas</div>
+				@for (post of topPosts(); track post.id; let i = $index) {
+					<div class="sidebar-top-post">
+						<span class="sidebar-top-post__num">{{ (i + 1).toString().padStart(2, '0') }}</span>
+						<span class="sidebar-top-post__title">{{ post.title }}</span>
+					</div>
+				}
+			</div>
+
+			<!-- Categorias -->
+			<div class="sidebar-widget">
+				<div class="sidebar-widget__title">Categorias</div>
+				<div class="sidebar-cats">
+					@for (cat of categories; track cat.slug) {
+						<button class="sidebar-cat" (click)="setCategory(cat.slug)"
+						        [class.sidebar-cat--active]="activeCategory === cat.slug">
+							<span>{{ cat.label }}</span>
+							<span class="sidebar-cat__count">{{ cat.count }}</span>
+						</button>
+					}
+				</div>
+			</div>
+
+			<!-- Discord -->
+			<div class="sidebar-widget sidebar-widget--discord">
+				<div class="sidebar-widget__title">Comunidade</div>
+				<p>Participe das orações e discussões no servidor.</p>
+				<a class="btn-discord" href="https://discord.gg/9uMhvKqCA" target="_blank" rel="noopener">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.101 18.08.118 18.1.136 18.112a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+					</svg>
+					Entrar no servidor
+				</a>
+			</div>
+
+		</aside>
+
+	</div>
+</section>

@@ -1,0 +1,277 @@
+<!-- ═══════════════════════════════════════════════════════════════════
+     FÓRUM — Layout comunitário elegante (Reddit meets The Atlantic)
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<section class="forum">
+
+	<!-- Header -->
+	<header class="forum-header">
+		<div class="container">
+			<p class="forum-header__eyebrow">
+				<span class="ornament">✠</span> Fórum
+			</p>
+			<h1 class="forum-header__title">Comunidade</h1>
+			<p class="forum-header__sub">
+				Debates, testemunhos e reflexões da nossa irmandade
+			</p>
+		</div>
+	</header>
+
+	<!-- Barra de ações -->
+	<div class="forum-toolbar">
+		<div class="container forum-toolbar__inner">
+
+			<!-- Filtros de ordenação -->
+			<div class="sort-tabs">
+				@for (s of sorts; track s.value) {
+					<button
+						class="sort-tab"
+						[class.sort-tab--active]="activeSort === s.value"
+						(click)="setSort(s.value)"
+					>
+						{{ s.label }}
+					</button>
+				}
+			</div>
+
+			<!-- Botão novo post -->
+			<button class="btn-new-post" (click)="openNewPost()">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+					<path d="M12 5v14M5 12h14"/>
+				</svg>
+				Nova discussão
+			</button>
+
+		</div>
+	</div>
+
+	<!-- Layout: threads + sidebar -->
+	<div class="forum-body container">
+
+		<!-- Lista de threads -->
+		<div class="threads-feed">
+
+			@if (loading) {
+				@for (i of [1,2,3,4,5]; track i) {
+					<div class="thread-skeleton">
+						<div class="thread-skeleton__votes"></div>
+						<div class="thread-skeleton__body">
+							<div class="sk sk--sm"></div>
+							<div class="sk sk--lg"></div>
+							<div class="sk sk--md"></div>
+						</div>
+					</div>
+				}
+			} @else if (error) {
+				<div class="state-msg state-msg--error">
+					<p>Erro ao carregar as discussões.</p>
+					<button class="retry-btn" (click)="load()">Tentar novamente</button>
+				</div>
+			} @else if (!posts.length) {
+				<div class="state-msg">
+					<span class="ornament">✠</span>
+					<p>Nenhuma discussão ainda. Seja o primeiro.</p>
+					<button class="btn-new-post" (click)="openNewPost()">Iniciar uma discussão</button>
+				</div>
+			} @else {
+				@for (post of posts; track post.id) {
+					<article class="thread" (click)="openThread(post.id)">
+
+						<!-- Coluna de votos -->
+						<div class="thread__votes" (click)="$event.stopPropagation()">
+							<button
+								class="vote-arrow vote-arrow--up"
+								[class.vote-arrow--active]="post._vote === 1"
+								(click)="vote(post, 1)"
+								aria-label="Upvote"
+							>
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+									<path d="M12 19V5M5 12l7-7 7 7"/>
+								</svg>
+							</button>
+							<span class="vote-count" [class.vote-count--pos]="post._score > 0" [class.vote-count--neg]="post._score < 0">
+                {{ post._score }}
+              </span>
+							<button
+								class="vote-arrow vote-arrow--down"
+								[class.vote-arrow--active-down]="post._vote === -1"
+								(click)="vote(post, -1)"
+								aria-label="Downvote"
+							>
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+									<path d="M12 5v14M19 12l-7 7-7-7"/>
+								</svg>
+							</button>
+						</div>
+
+						<!-- Corpo da thread -->
+						<div class="thread__body">
+							<div class="thread__meta">
+								<div class="thread__author">
+									<div class="thread__avatar">
+										{{ authorInitial(post) }}
+									</div>
+									<span class="thread__author-name">{{ post.author.globalName || post.author.username }}</span>
+								</div>
+								<span class="thread__sep">·</span>
+								<time class="thread__date">{{ formatDate(post.createdAt) }}</time>
+								@if (post.tags?.length) {
+									<span class="thread__sep">·</span>
+									@for (tag of post.tags!.slice(0, 2); track tag) {
+										<span class="thread__tag">{{ tag }}</span>
+									}
+								}
+							</div>
+
+							<h2 class="thread__title">{{ post.title }}</h2>
+
+							@if (post.content) {
+								<p class="thread__excerpt">{{ excerpt(post.content) }}</p>
+							}
+
+							<div class="thread__footer">
+								<button class="thread__action" (click)="openThread(post.id); $event.stopPropagation()">
+									<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+									</svg>
+									{{ post.replyCount || 0 }} respostas
+								</button>
+								<button class="thread__action" (click)="share(post, $event)">
+									<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+										<line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+									</svg>
+									Compartilhar
+								</button>
+							</div>
+						</div>
+
+					</article>
+				}
+
+				@if (loadingMore) {
+					<div class="load-more-spinner"><span class="spinner"></span></div>
+				}
+
+				@if (!hasMore && posts.length > 1) {
+					<div class="feed-end">
+						<span class="rule__line"></span>
+						<span class="feed-end__text">✠ Fim das discussões ✠</span>
+						<span class="rule__line"></span>
+					</div>
+				}
+			}
+
+		</div>
+
+		<!-- Sidebar do fórum -->
+		<aside class="forum-sidebar">
+
+			<!-- Sobre a comunidade -->
+			<div class="fw">
+				<div class="fw__title">Sobre a Comunidade</div>
+				<p class="fw__text">
+					Um espaço de debate católico tradicional, guiado pela Fé, pela Razão e pela caridade fraterna.
+				</p>
+				<div class="community-stats">
+					<div class="stat">
+						<span class="stat__num">{{ communityStats.members }}</span>
+						<span class="stat__label">Membros</span>
+					</div>
+					<div class="stat">
+						<span class="stat__num">{{ communityStats.posts }}</span>
+						<span class="stat__label">Discussões</span>
+					</div>
+					<div class="stat">
+						<span class="stat__num">{{ communityStats.online }}</span>
+						<span class="stat__label">Online</span>
+					</div>
+				</div>
+				<button class="btn-full btn-full--gold" (click)="openNewPost()">
+					+ Nova Discussão
+				</button>
+			</div>
+
+			<!-- Regras da comunidade -->
+			<div class="fw">
+				<div class="fw__title">Regras</div>
+				<ol class="rules-list">
+					@for (rule of rules; track rule.num) {
+						<li class="rule-item">
+							<span class="rule-item__num">{{ rule.num }}</span>
+							<span class="rule-item__text">{{ rule.text }}</span>
+						</li>
+					}
+				</ol>
+			</div>
+
+			<!-- Tags populares -->
+			<div class="fw">
+				<div class="fw__title">Tags Populares</div>
+				<div class="tag-cloud">
+					@for (tag of popularTags; track tag) {
+						<button class="tag-cloud__item" (click)="filterByTag(tag)">{{ tag }}</button>
+					}
+				</div>
+			</div>
+
+		</aside>
+
+	</div>
+</section>
+
+<!-- Modal: nova discussão -->
+@if (showNewPost) {
+	<div class="modal-backdrop" (click)="closeNewPost()">
+		<div class="modal" (click)="$event.stopPropagation()">
+			<div class="modal__header">
+				<h3 class="modal__title">Nova Discussão</h3>
+				<button class="modal__close" (click)="closeNewPost()">✕</button>
+			</div>
+
+			<div class="modal__body">
+				<div class="form-group">
+					<label class="form-label">Título</label>
+					<input
+						class="form-input"
+						type="text"
+						[(ngModel)]="newPost.title"
+						placeholder="Qual é o tema da discussão?"
+						maxlength="200"
+					/>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Conteúdo</label>
+					<textarea
+						class="form-input form-input--textarea"
+						[(ngModel)]="newPost.content"
+						placeholder="Desenvolva o tema, faça uma pergunta ou compartilhe uma reflexão..."
+						rows="6"
+					></textarea>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Tags (opcional, separadas por vírgula)</label>
+					<input
+						class="form-input"
+						type="text"
+						[(ngModel)]="newPost.tagsRaw"
+						placeholder="ex: rosario, doutrina, santos-padres"
+					/>
+				</div>
+			</div>
+
+			<div class="modal__footer">
+				<button class="btn-ghost" (click)="closeNewPost()">Cancelar</button>
+				<button
+					class="btn-primary"
+					(click)="submitPost()"
+					[disabled]="!newPost.title.trim() || submitting"
+				>
+					{{ submitting ? 'Publicando…' : 'Publicar' }}
+				</button>
+			</div>
+		</div>
+	</div>
+}

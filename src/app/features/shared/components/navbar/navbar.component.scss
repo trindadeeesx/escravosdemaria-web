@@ -1,0 +1,279 @@
+@use "../../../../../styles/variables" as *;
+
+.navbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 200;
+	height: $navbar-height;
+	background: var(--nav-bg);
+	border-bottom: 1px solid transparent;
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	transition: border-color 0.3s ease;
+
+	&--scrolled {
+		border-color: var(--nav-border);
+	}
+}
+
+.navbar-inner {
+	max-width: $content-max;
+	margin: 0 auto;
+	height: 100%;
+	padding: 0 1.5rem;
+	display: flex;
+	align-items: center;
+	gap: $space-6;
+}
+
+// ─── Brand ────────────────────────────────────────────────────────────────────
+.brand {
+	display: flex;
+	align-items: center;
+	gap: $space-2;
+	text-decoration: none;
+	flex-shrink: 0;
+	margin-right: auto;
+}
+
+.brand-icon {
+	color: var(--gold);
+	font-size: 0.82rem;
+	opacity: 0.8;
+	transition: opacity $transition-fast;
+
+	.brand:hover & { opacity: 1; }
+}
+
+.brand-name {
+	font-family: $font-display;
+	font-size: 0.76rem;
+	font-weight: 600;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	color: var(--nav-text);
+	white-space: nowrap;
+}
+
+// ─── Nav links — sem border-radius, estilo menu de jornal ────────────────────
+.nav-links {
+	display: flex;
+	align-items: center;
+	gap: 0; // sem gap — itens colados, mais compacto
+
+	a {
+		font-family: $font-display;
+		font-size: 0.6rem;
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--nav-text-muted);
+		padding: $space-2 $space-3;
+		border-radius: 0; // zero — linha de menu editorial
+		transition: color $transition-fast, background $transition-fast;
+		white-space: nowrap;
+		// Underline sutil no bottom em vez de background
+		border-bottom: 2px solid transparent;
+
+		&:hover {
+			color: var(--nav-text);
+			border-bottom-color: var(--border);
+		}
+
+		&.active {
+			color: var(--gold);
+			border-bottom-color: var(--gold);
+		}
+	}
+}
+
+// ─── Ações ────────────────────────────────────────────────────────────────────
+.nav-actions {
+	display: flex;
+	align-items: center;
+	gap: $space-2;
+	flex-shrink: 0;
+}
+
+// Icon button — quadrado, não circular
+.icon-btn {
+	width: 30px;
+	height: 30px;
+	border-radius: $radius-sm; // 3px
+	border: 1px solid var(--nav-border);
+	background: transparent;
+	color: var(--nav-text-muted);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: $transition-fast;
+
+	&:hover {
+		color: var(--nav-text);
+		border-color: var(--text-faint);
+		background: var(--nav-active-bg);
+	}
+}
+
+// ─── Menu do usuário ──────────────────────────────────────────────────────────
+.user-menu {
+	display: flex;
+	align-items: center;
+	gap: $space-2;
+	cursor: pointer;
+	padding: $space-1 $space-2;
+	border-radius: $radius-sm; // 3px
+	border: 1px solid var(--nav-border);
+	background: transparent;
+	transition: $transition-fast;
+	position: relative;
+	user-select: none;
+
+	&:hover { border-color: var(--text-faint); }
+}
+
+.user-avatar {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%; // avatar é retrato, mantém circular
+	object-fit: cover;
+	border: 1px solid var(--border);
+	flex-shrink: 0;
+
+	&--placeholder {
+		background: var(--gold-bg);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-family: $font-display;
+		font-size: 0.52rem;
+		font-weight: 600;
+		color: var(--gold);
+	}
+}
+
+.user-name {
+	font-family: $font-sans;
+	font-size: 0.73rem;
+	font-weight: 500;
+	color: var(--nav-text);
+	max-width: 100px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.chevron {
+	color: var(--nav-text-muted);
+	flex-shrink: 0;
+}
+
+// Dropdown — quadrado, formal
+.user-dropdown {
+	position: absolute;
+	top: calc(100% + 6px);
+	right: 0;
+	background: var(--bg-card);
+	border: 1px solid var(--border);
+	border-radius: $radius-md; // 4px
+	box-shadow: var(--shadow-md);
+	padding: $space-1;
+	min-width: 130px;
+	animation: fadeIn 0.12s ease;
+
+	&__item {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		gap: $space-2;
+		padding: $space-2 $space-3;
+		border-radius: $radius-sm; // 3px
+		font-family: $font-sans;
+		font-size: 0.78rem;
+		font-weight: 500;
+		color: var(--text-muted);
+		cursor: pointer;
+		transition: $transition-fast;
+		background: none;
+		border: none;
+		text-align: left;
+
+		&:hover {
+			background: var(--bg-subtle);
+			color: var(--text);
+		}
+
+		&--danger:hover {
+			background: rgba(185, 28, 28, 0.05);
+			color: var(--danger);
+		}
+	}
+}
+
+// ─── Botão login — $radius-sm, sem pill ───────────────────────────────────────
+.btn-login {
+	display: flex;
+	align-items: center;
+	gap: $space-2;
+	background: var(--gold);
+	color: #fff;
+	padding: 6px $space-3;
+	border-radius: $radius-sm; // 3px — sóbrio
+	border: none;
+	font-family: $font-sans;
+	font-size: 0.7rem;
+	font-weight: 600;
+	letter-spacing: 0.03em;
+	cursor: pointer;
+	transition: background $transition-fast;
+	white-space: nowrap;
+
+	&:hover { background: var(--gold-dark); }
+
+	svg { flex-shrink: 0; opacity: 0.9; }
+}
+
+// ─── Hamburguer mobile ────────────────────────────────────────────────────────
+.hamburger { display: none; }
+
+// ─── Responsivo ───────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+	.nav-links {
+		display: none;
+		position: fixed;
+		top: $navbar-height;
+		left: 0;
+		right: 0;
+		background: var(--nav-bg);
+		border-bottom: 1px solid var(--nav-border);
+		flex-direction: column;
+		align-items: stretch;
+		padding: $space-2 $space-4;
+		backdrop-filter: blur(12px);
+
+		&--open { display: flex; }
+
+		a {
+			border-bottom: 1px solid var(--border-soft); // usa borda horizontal no mobile
+			border-right: none;
+			padding: $space-3 $space-2;
+			font-size: 0.68rem;
+
+			&.active {
+				border-bottom-color: var(--gold);
+				color: var(--gold);
+			}
+		}
+	}
+
+	.user-name { display: none; }
+	.hamburger { display: flex; }
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; transform: translateY(-4px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
