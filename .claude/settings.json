@@ -1,0 +1,7 @@
+{
+	"env": {
+		"OPENAI_BASE_URL": "https://openrouter.ai/api",
+		"OPENAI_API_KEY": "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",
+		"OPENAI_MODEL": "qwen/qwen3.6-plus:free"
+	}
+}

@@ -1,10 +1,14 @@
 .layout-main {
-  padding-top: 56px;
-  min-height: 100vh;
+	padding-top: 56px;
+	min-height: 100vh;
 }
 
 .layout-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 0 2rem;
+
+	@media (max-width: 768px) {
+		padding: 0 1.5rem;
+	}
 }

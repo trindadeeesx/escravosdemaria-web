@@ -1024,14 +1024,18 @@ const MOCK: BlogPost[] = [
 
 @Injectable({ providedIn: "root" })
 export class BlogService {
-  constructor(private api: ApiService) {}
+	constructor(private api: ApiService) {}
 
-  getAll(page = 0, size = 10): Observable<Page<BlogPost>> {
-    // trocar por this.api.get('/blog', { page, size }) quando backend estiver pronto
-    return of({ content: MOCK, totalPages: 1, totalElements: MOCK.length, number: 0 });
-  }
+	getAll(page = 0, size = 10): Observable<Page<BlogPost>> {
+		// trocar por this.api.get('/blog', { page, size }) quando backend estiver pronto
+		return of({ content: MOCK, totalPages: 1, totalElements: MOCK.length, number: 0 });
+	}
 
-  create(post: BlogPost): Observable<BlogPost> {
-    return this.api.post<BlogPost>("/blog", post);
-  }
+	create(post: BlogPost): Observable<BlogPost> {
+		return this.api.post<BlogPost>("/blog", post);
+	}
+
+	vote(postId: string, voteValue: number): Observable<any> {
+		return this.api.post(`/blog/${postId}/vote`, { value: voteValue });
+	}
 }
