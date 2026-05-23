@@ -210,6 +210,17 @@
 			background: rgba(185, 28, 28, 0.05);
 			color: var(--danger);
 		}
+
+		// suporte para <a> além de <button>
+		&[routerLink] {
+			text-decoration: none;
+		}
+	}
+
+	&__divider {
+		height: 1px;
+		background: var(--border-soft);
+		margin: $space-1 $space-2;
 	}
 }
 

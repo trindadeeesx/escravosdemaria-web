@@ -32,7 +32,7 @@ export interface DiscordWidgetData {
 
 @Injectable({ providedIn: "root" })
 export class DiscordService {
-	private readonly DISCORD_SERVER_ID = "SEU_SERVER_ID_AQUI"; // Substitua pelo ID do seu servidor
+	private readonly DISCORD_SERVER_ID = environment.discord.serverId;
 	private readonly DISCORD_WIDGET_URL = `https://discord.com/api/guilds/${this.DISCORD_SERVER_ID}/widget.json`;
 
 	constructor(private http: HttpClient) {}

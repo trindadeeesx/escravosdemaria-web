@@ -284,6 +284,100 @@
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// PAINEL ADMIN
+// ═══════════════════════════════════════════════════════════════════════════════
+.admin-panel {
+	padding-top: $space-8;
+	padding-bottom: 0;
+}
+
+.admin-panel__header {
+	margin-bottom: $space-4;
+}
+
+.admin-panel__eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: $space-2;
+	font-family: $font-display;
+	font-size: 0.54rem;
+	font-weight: 600;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: var(--gold);
+
+	.ornament { font-size: 0.7rem; }
+}
+
+.admin-panel__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: $space-3;
+}
+
+.admin-card {
+	display: flex;
+	align-items: center;
+	gap: $space-4;
+	padding: $space-4 $space-5;
+	background: var(--bg-card);
+	border: 1px solid var(--border-soft);
+	border-radius: $radius-md;
+	text-decoration: none;
+	transition: border-color $transition-fast, background $transition-fast;
+	cursor: pointer;
+
+	&:hover {
+		border-color: rgba(180, 148, 58, 0.35);
+		background: var(--gold-bg);
+
+		.admin-card__title { color: var(--gold); }
+		.admin-card__arrow { transform: translateX(4px); color: var(--gold); }
+	}
+}
+
+.admin-card__icon {
+	width: 40px;
+	height: 40px;
+	border-radius: $radius-sm;
+	background: var(--gold-bg);
+	border: 1px solid rgba(180, 148, 58, 0.2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--gold);
+	flex-shrink: 0;
+}
+
+.admin-card__body {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.admin-card__title {
+	font-family: $font-serif;
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: var(--text);
+	transition: color $transition-fast;
+}
+
+.admin-card__desc {
+	font-family: $font-sans;
+	font-size: 0.72rem;
+	color: var(--text-muted);
+}
+
+.admin-card__arrow {
+	color: var(--text-faint);
+	flex-shrink: 0;
+	transition: transform $transition-fast, color $transition-fast;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // CORPO 3 COLUNAS
 // ═══════════════════════════════════════════════════════════════════════════════
 .home-body {
@@ -900,19 +994,37 @@
 	display: flex;
 	align-items: center;
 	gap: $space-4;
-	margin: $space-6 0;
+	margin: $space-8 0;
+	justify-content: center;
+}
 
-	.rule__line { flex: 1; height: 1px; background: var(--border); }
+.liturgy-divider__line {
+	flex: 1;
+	height: 1px;
+	background: linear-gradient(to right, transparent, var(--border), transparent);
+}
+
+.liturgy-divider__center {
+	display: flex;
+	align-items: center;
+	gap: $space-3;
+	flex-shrink: 0;
 }
 
 .liturgy-divider__ornament {
 	font-family: $font-display;
-	font-size: 0.52rem;
-	letter-spacing: 0.16em;
+	font-size: 0.55rem;
+	font-weight: 600;
+	letter-spacing: 0.22em;
 	text-transform: uppercase;
 	color: var(--gold);
 	white-space: nowrap;
-	opacity: 0.6;
+}
+
+.liturgy-divider__diamond {
+	font-size: 0.5rem;
+	color: var(--gold);
+	opacity: 0.5;
 }
 
 // ─── Fórum preview ────────────────────────────────────────────────────────────

@@ -22,12 +22,10 @@ export class HomeService {
 		this.api.get<HomeData>("/bff/home").subscribe({
 			next: (data) => {
 				this._homeData.set(data);
+				this._loading.set(false);
 			},
 			error: (err) => {
-				console.error("Erro ao carregar Home:", err);
 				this._error.set("Não foi possível carregar a página inicial. Tente novamente.");
-			},
-			complete: () => {
 				this._loading.set(false);
 			},
 		});

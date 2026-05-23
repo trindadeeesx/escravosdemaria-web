@@ -83,6 +83,177 @@
 	}
 }
 
+// ─── Search box ───────────────────────────────────────────────────────────────
+.search-box {
+	flex: 1;
+	max-width: 320px;
+	display: flex;
+	align-items: center;
+	gap: $space-2;
+	background: var(--bg-subtle);
+	border: 1px solid var(--border-soft);
+	border-radius: $radius-sm;
+	padding: 0 $space-3;
+	transition: border-color $transition-fast;
+
+	&:focus-within, &--active {
+		border-color: var(--border);
+		background: var(--bg-card);
+	}
+
+	&__icon { color: var(--text-faint); flex-shrink: 0; }
+
+	&__input {
+		flex: 1;
+		background: none;
+		border: none;
+		outline: none;
+		font-family: $font-sans;
+		font-size: 0.78rem;
+		color: var(--text);
+		padding: 7px 0;
+
+		&::placeholder { color: var(--text-faint); }
+	}
+
+	&__clear {
+		color: var(--text-faint);
+		font-size: 0.65rem;
+		padding: 2px;
+		border-radius: $radius-xs;
+		line-height: 1;
+		transition: $transition-fast;
+		&:hover { color: var(--text); background: var(--bg-subtle); }
+	}
+}
+
+// ─── Filter button ────────────────────────────────────────────────────────────
+.filter-btn {
+	position: relative;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--border-soft);
+	border-radius: $radius-sm;
+	background: var(--bg-card);
+	color: var(--text-muted);
+	cursor: pointer;
+	transition: $transition-fast;
+	flex-shrink: 0;
+
+	&:hover { border-color: var(--border); color: var(--text); }
+
+	&--active {
+		border-color: var(--gold);
+		color: var(--gold);
+		background: var(--gold-bg);
+	}
+
+	&__dot {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		width: 5px;
+		height: 5px;
+		background: var(--gold);
+		border-radius: 50%;
+	}
+}
+
+// ─── Filter panel ─────────────────────────────────────────────────────────────
+.filter-panel {
+	padding: $space-4 1.5rem;
+	border-top: 1px solid var(--border-soft);
+	background: var(--bg-inset);
+	display: flex;
+	flex-direction: column;
+	gap: $space-4;
+	animation: fadeDown 0.15s ease both;
+}
+
+@keyframes fadeDown {
+	from { opacity: 0; transform: translateY(-6px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+.filter-panel__row {
+	display: flex;
+	align-items: center;
+	gap: $space-4;
+	flex-wrap: wrap;
+}
+
+.filter-label {
+	font-family: $font-display;
+	font-size: 0.5rem;
+	font-weight: 600;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--text-faint);
+	white-space: nowrap;
+	min-width: 60px;
+}
+
+.filter-input {
+	flex: 1;
+	max-width: 260px;
+	background: var(--bg-card);
+	border: 1px solid var(--border-soft);
+	border-radius: $radius-sm;
+	padding: 6px $space-3;
+	font-family: $font-sans;
+	font-size: 0.78rem;
+	color: var(--text);
+	outline: none;
+	transition: border-color $transition-fast;
+
+	&::placeholder { color: var(--text-faint); }
+	&:focus { border-color: var(--border); }
+}
+
+.filter-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: $space-2;
+}
+
+.filter-tag {
+	font-family: $font-sans;
+	font-size: 0.68rem;
+	font-weight: 500;
+	color: var(--text-muted);
+	background: var(--bg-card);
+	border: 1px solid var(--border-soft);
+	border-radius: $radius-xs;
+	padding: 3px 10px;
+	cursor: pointer;
+	transition: $transition-fast;
+
+	&:hover { border-color: var(--border); color: var(--text); }
+
+	&--active {
+		background: var(--gold-bg);
+		border-color: rgba(180, 148, 58, 0.35);
+		color: var(--gold);
+		font-weight: 600;
+	}
+}
+
+.filter-clear {
+	font-family: $font-sans;
+	font-size: 0.7rem;
+	color: var(--text-faint);
+	text-decoration: underline;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	transition: color $transition-fast;
+	&:hover { color: var(--danger); }
+}
+
 // Botão novo post
 .btn-new-post {
 	display: flex;

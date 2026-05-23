@@ -1,13 +1,99 @@
-<app-navbar />
-<div class="admin-wrap">
-  <aside class="admin-sidebar">
-    <div class="sidebar-title">Administração</div>
-    <nav>
-      <a routerLink="/admin/moderation" routerLinkActive="active">Moderação</a>
-      <a routerLink="/admin/bot" routerLinkActive="active">Bot</a>
-    </nav>
-  </aside>
-  <main class="admin-main">
-    <router-outlet />
-  </main>
+<div class="adm" [class.adm--collapsed]="sidebarCollapsed()">
+
+	<!-- ═══ SIDEBAR ══════════════════════════════════════════════════════════ -->
+	<aside class="sidebar">
+
+		<!-- Branding -->
+		<div class="sidebar__brand">
+			<span class="sidebar__cross">✠</span>
+			@if (!sidebarCollapsed()) {
+				<div class="sidebar__brand-text">
+					<span class="sidebar__brand-name">Escravos de Maria</span>
+					<span class="sidebar__brand-sub">Painel Administrativo</span>
+				</div>
+			}
+		</div>
+
+		<div class="sidebar__divider"></div>
+
+		<!-- Navegação -->
+		<nav class="sidebar__nav">
+			@if (!sidebarCollapsed()) {
+				<span class="sidebar__nav-label">Gestão</span>
+			}
+
+			<a routerLink="/admin/moderation" routerLinkActive="active" class="sidebar__link" [title]="sidebarCollapsed() ? 'Moderação' : ''">
+				<svg class="sidebar__link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+					<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+				</svg>
+				@if (!sidebarCollapsed()) { <span>Moderação</span> }
+			</a>
+
+			<a routerLink="/admin/bot" routerLinkActive="active" class="sidebar__link" [title]="sidebarCollapsed() ? 'Bot Discord' : ''">
+				<svg class="sidebar__link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+					<rect x="3" y="11" width="18" height="10" rx="2"/>
+					<path d="M12 2v4M8 11V7a4 4 0 0 1 8 0v4"/>
+					<circle cx="9" cy="16" r="1" fill="currentColor"/>
+					<circle cx="15" cy="16" r="1" fill="currentColor"/>
+				</svg>
+				@if (!sidebarCollapsed()) { <span>Bot Discord</span> }
+			</a>
+		</nav>
+
+		<!-- Rodapé da sidebar -->
+		<div class="sidebar__footer">
+			<div class="sidebar__divider"></div>
+
+			<a routerLink="/home" class="sidebar__link sidebar__link--muted" [title]="sidebarCollapsed() ? 'Voltar ao site' : ''">
+				<svg class="sidebar__link-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M19 12H5M12 5l-7 7 7 7"/>
+				</svg>
+				@if (!sidebarCollapsed()) { <span>Voltar ao site</span> }
+			</a>
+
+			<div class="sidebar__divider"></div>
+
+			<!-- Usuário -->
+			<div class="sidebar__user">
+				@if (getAvatarUrl(auth.currentUser()?.avatar)) {
+					<img class="sidebar__avatar" [src]="getAvatarUrl(auth.currentUser()?.avatar)" [alt]="auth.currentUser()?.username" />
+				} @else {
+					<div class="sidebar__avatar sidebar__avatar--placeholder">{{ getInitial() }}</div>
+				}
+				@if (!sidebarCollapsed()) {
+					<div class="sidebar__user-info">
+						<span class="sidebar__user-name">{{ auth.currentUser()?.globalName || auth.currentUser()?.username }}</span>
+						<span class="sidebar__user-role">{{ getUserRoleLabel() }}</span>
+					</div>
+					<button class="sidebar__logout" (click)="logout()" title="Sair">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+						</svg>
+					</button>
+				}
+			</div>
+		</div>
+
+	</aside>
+
+	<!-- ═══ CONTEÚDO PRINCIPAL ════════════════════════════════════════════════ -->
+	<div class="adm__body">
+
+		<!-- Topbar -->
+		<header class="adm__topbar">
+			<button class="adm__toggle-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+					<path d="M3 12h18M3 6h18M3 18h18"/>
+				</svg>
+			</button>
+			<span class="adm__topbar-ornament">✠</span>
+		</header>
+
+		<!-- Página -->
+		<main class="adm__main">
+			<router-outlet />
+		</main>
+
+	</div>
+
 </div>

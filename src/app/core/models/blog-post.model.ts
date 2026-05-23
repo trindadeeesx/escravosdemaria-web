@@ -23,7 +23,7 @@ export interface BlogPost {
 	};
 	upvotes: number;
 	downvotes: number;
-	userVote: number | null;
+	userVote: "UPVOTE" | "DOWNVOTE" | null;
 	tags?: string[];
 	status: string;
 	author: Author;

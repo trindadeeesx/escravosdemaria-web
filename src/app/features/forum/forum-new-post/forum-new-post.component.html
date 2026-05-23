@@ -1,0 +1,261 @@
+<div class="composer">
+
+	<!-- ── Cabeçalho ──────────────────────────────────────────────────────── -->
+	<header class="composer-header">
+		<a routerLink="/forum" class="composer-header__back">
+			<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<path d="M19 12H5M12 5l-7 7 7 7"/>
+			</svg>
+			Fórum
+		</a>
+		<div class="composer-header__center">
+			<span class="composer-header__ornament">✠</span>
+			<h1 class="composer-header__title">Nova Discussão</h1>
+		</div>
+		<div class="composer-header__spacer"></div>
+	</header>
+
+	<!-- ── Corpo ──────────────────────────────────────────────────────────── -->
+	<div class="composer-body">
+
+		<!-- Coluna principal -->
+		<main class="composer-main">
+
+			<!-- Título -->
+			<div class="field">
+				<label class="field__label">Título <span class="field__required">*</span></label>
+				<input
+					class="field__input field__input--title"
+					type="text"
+					placeholder="Do que se trata esta discussão?"
+					[(ngModel)]="title"
+					maxlength="200"
+				/>
+				<span class="field__count">{{ title.length }}/200</span>
+			</div>
+
+			<!-- Editor markdown -->
+			<div class="editor">
+				<div class="editor__top">
+					<!-- Tabs -->
+					<div class="editor__tabs">
+						<button class="editor__tab" [class.editor__tab--active]="activeTab === 'write'" (click)="setTab('write')">Escrever</button>
+						<button class="editor__tab" [class.editor__tab--active]="activeTab === 'preview'" (click)="setTab('preview')">Pré-visualizar</button>
+					</div>
+
+					<!-- Toolbar (só no modo write) -->
+					@if (activeTab === 'write') {
+						<div class="editor__toolbar">
+							<button class="tool-btn" (click)="bold()" title="Negrito (Ctrl+B)"><strong>B</strong></button>
+							<button class="tool-btn tool-btn--italic" (click)="italic()" title="Itálico"><em>I</em></button>
+							<div class="tool-sep"></div>
+							<button class="tool-btn" (click)="heading()" title="Título">H</button>
+							<button class="tool-btn" (click)="blockquote()" title="Citação">
+								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zm12 0c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+							</button>
+							<div class="tool-sep"></div>
+							<button class="tool-btn" (click)="code()" title="Código inline">
+								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+							</button>
+							<button class="tool-btn" (click)="codeBlock()" title="Bloco de código">{{ '{' }}{{ '}' }}</button>
+							<div class="tool-sep"></div>
+							<button class="tool-btn" (click)="listItem()" title="Lista">
+								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+							</button>
+						</div>
+					}
+				</div>
+
+				<!-- Área de texto / preview -->
+				@if (activeTab === 'write') {
+					<textarea
+						#textarea
+						class="editor__textarea"
+						[(ngModel)]="content"
+						placeholder="Escreva em **Markdown**. Pode usar _itálico_, ## títulos, > citações, `código` e muito mais."
+						rows="16"
+					></textarea>
+				} @else {
+					<div class="editor__preview markdown-body" [innerHTML]="previewHtml"></div>
+				}
+			</div>
+
+			<!-- Mídia -->
+			<div class="field">
+				<label class="field__label">Mídia</label>
+
+				<!-- Drop zone -->
+				<div
+					class="drop-zone"
+					[class.drop-zone--active]="dragOver"
+					(dragover)="$event.preventDefault(); dragOver = true"
+					(dragleave)="dragOver = false"
+					(drop)="onFilesDrop($event)"
+					(click)="fileInputRef.nativeElement.click()"
+				>
+					<input #fileInput type="file" multiple accept="image/*,video/*" style="display:none" (change)="onFilesSelected($event)" />
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="drop-zone__icon">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+					</svg>
+					<span class="drop-zone__text">Arraste imagens ou vídeos aqui, ou <u>clique para selecionar</u></span>
+					<span class="drop-zone__hint">Imagens e vídeos · Máximo 10 arquivos</span>
+				</div>
+
+				<!-- Link -->
+				<div class="media-link-row">
+					@if (showLinkInput) {
+						<input
+							class="field__input media-link-input"
+							type="url"
+							placeholder="https://…"
+							[(ngModel)]="linkInput"
+							(keydown.enter)="addLink()"
+							(keydown.escape)="showLinkInput = false"
+							autofocus
+						/>
+						<button class="btn-ghost-sm" (click)="addLink()">Adicionar</button>
+						<button class="btn-ghost-sm btn-ghost-sm--muted" (click)="showLinkInput = false">Cancelar</button>
+					} @else {
+						<button class="btn-ghost-sm" (click)="showLinkInput = true">
+							<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+							Adicionar link
+						</button>
+					}
+				</div>
+
+				<!-- Grid de mídia com reorder -->
+				@if (mediaItems.length) {
+					<div class="media-grid">
+						@for (item of mediaItems; track item.id; let i = $index) {
+							<div
+								class="media-item"
+								[class.media-item--dragging]="draggedIndex === i"
+								draggable="true"
+								(dragstart)="onDragStart(i)"
+								(dragover)="onDragOverItem($event, i)"
+								(dragend)="onDragEnd()"
+							>
+								@if (item.type === 'image' && item.preview) {
+									<img class="media-item__thumb" [src]="item.preview" [alt]="item.name" />
+								} @else if (item.type === 'video') {
+									<div class="media-item__thumb media-item__thumb--video">
+										<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+									</div>
+								} @else {
+									<div class="media-item__thumb media-item__thumb--link">
+										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+									</div>
+								}
+								<div class="media-item__name">{{ item.name }}</div>
+								<div class="media-item__controls">
+									<div class="drag-handle" title="Arrastar para reordenar">
+										<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="9" y2="6"/><line x1="15" y1="6" x2="15" y2="6"/><line x1="9" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="15" y2="12"/><line x1="9" y1="18" x2="9" y2="18"/><line x1="15" y1="18" x2="15" y2="18"/></svg>
+									</div>
+									<button class="media-remove" (click)="removeMedia(item.id)" title="Remover">✕</button>
+								</div>
+								<div class="media-item__order">{{ i + 1 }}</div>
+							</div>
+						}
+					</div>
+				}
+			</div>
+
+			<!-- Tags -->
+			<div class="field">
+				<label class="field__label">Tags <span class="field__hint">Até 5 · Enter ou vírgula para adicionar</span></label>
+				<div class="tag-input-wrap" [class.tag-input-wrap--full]="tags.length >= 5">
+					@for (tag of tags; track tag) {
+						<span class="tag-chip">
+							{{ tag }}
+							<button class="tag-chip__remove" (click)="removeTag(tag)">✕</button>
+						</span>
+					}
+					@if (tags.length < 5) {
+						<input
+							class="tag-input"
+							type="text"
+							placeholder="Adicionar tag…"
+							[(ngModel)]="tagInput"
+							(keydown)="onTagKeydown($event)"
+						/>
+					}
+				</div>
+				<div class="tag-suggestions">
+					@for (tag of popularTags; track tag) {
+						<button
+							class="tag-suggestion"
+							[class.tag-suggestion--added]="tags.includes(tag)"
+							(click)="addPopularTag(tag)"
+							[disabled]="tags.includes(tag)"
+						>+ {{ tag }}</button>
+					}
+				</div>
+			</div>
+
+		</main>
+
+		<!-- Sidebar de ajuda -->
+		<aside class="composer-aside">
+
+			<div class="aside-card">
+				<div class="aside-card__title">Regras da comunidade</div>
+				<ol class="aside-rules">
+					<li>Caridade em tudo</li>
+					<li>Fidelidade à Tradição</li>
+					<li>Sem heresias ou modernismos</li>
+					<li>Respeite os membros</li>
+					<li>Português em primeiro lugar</li>
+				</ol>
+			</div>
+
+			<div class="aside-card aside-card--markdown">
+				<div class="aside-card__title">Markdown rápido</div>
+				<table class="md-cheat">
+					<tr><td><code>**texto**</code></td><td><strong>negrito</strong></td></tr>
+					<tr><td><code>*texto*</code></td><td><em>itálico</em></td></tr>
+					<tr><td><code>## Título</code></td><td>título</td></tr>
+					<tr><td><code>> texto</code></td><td>citação</td></tr>
+					<tr><td><code>`código`</code></td><td><code>inline</code></td></tr>
+					<tr><td><code>- item</code></td><td>lista</td></tr>
+					<tr><td><code>[texto](url)</code></td><td>link</td></tr>
+				</table>
+			</div>
+
+			<div class="aside-card aside-card--info">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="aside-info-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+				<p class="aside-card__text">Discussões de usuários comuns passam por aprovação dos administradores antes de serem publicadas.</p>
+			</div>
+
+		</aside>
+
+	</div>
+
+	<!-- ── Rodapé fixo com ações ──────────────────────────────────────────── -->
+	<footer class="composer-footer">
+		<div class="composer-footer__inner">
+			<a routerLink="/forum" class="btn-ghost">Descartar</a>
+			<div class="composer-footer__right">
+				<button
+					class="btn-draft"
+					(click)="saveDraft()"
+					[disabled]="!title.trim() || savingDraft"
+				>
+					{{ savingDraft ? 'Salvando…' : 'Salvar rascunho' }}
+				</button>
+				<button
+					class="btn-publish"
+					(click)="submit()"
+					[disabled]="!canSubmit"
+				>
+					@if (submitting) {
+						<span class="spinner-sm"></span> Publicando…
+					} @else {
+						Enviar para publicação
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+					}
+				</button>
+			</div>
+		</div>
+	</footer>
+
+</div>

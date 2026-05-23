@@ -1,6 +1,9 @@
-import { Component, Input, signal, computed } from "@angular/core";
+import { Component, Input, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { BlogPost } from "../../../../core/models";
+import { BlogService } from "../../../../core/services/blog.service";
+
+type VoteType = "UPVOTE" | "DOWNVOTE";
 
 @Component({
 	selector: "app-post-card",
@@ -12,39 +15,41 @@ import { BlogPost } from "../../../../core/models";
 export class PostCardComponent {
 	@Input({ required: true }) post!: BlogPost;
 
-	// Voto local: 1 = upvote, -1 = downvote, 0 = neutro
-	private _vote = signal<number>(0);
+	localVote = signal<VoteType | null>(null);
 
-	userVote = computed(() => {
-		// Inicializa com o voto que veio do backend se ainda não foi modificado
-		if (this._vote() === 0 && this.post.userVote !== null) {
-			return this.post.userVote ?? 0;
-		}
-		return this._vote();
-	});
+	constructor(private blogService: BlogService) {}
 
-	voteCount = computed(() => {
-		const base = this.post.upvotes - (this.post.downvotes ?? 0);
-		const prev = this.post.userVote ?? 0;
-		const curr = this.userVote();
-		// Ajusta o contador otimisticamente
-		return base - prev + curr;
-	});
+	ngOnChanges(): void {
+		this.localVote.set(this.post.userVote);
+	}
+
+	get currentVote(): VoteType | null {
+		return this.localVote();
+	}
 
 	get authorInitial(): string {
 		const name = this.post.author.globalName || this.post.author.username;
 		return name.charAt(0).toUpperCase();
 	}
 
-	vote(direction: 1 | -1, event: MouseEvent): void {
+	vote(type: VoteType, event: MouseEvent): void {
 		event.stopPropagation();
-		// Toggle: clicar no mesmo voto desfaz
-		if (this.userVote() === direction) {
-			this._vote.set(0);
-		} else {
-			this._vote.set(direction);
-		}
-		// TODO: this.blogService.vote(this.post.id, this._vote()).subscribe()
+		const prev = this.localVote();
+		const prevUp   = this.post.upvotes;
+		const prevDown = this.post.downvotes;
+		this.localVote.set(prev === type ? null : type);
+		this.blogService.vote(this.post.id, type).subscribe({
+			next: (res) => {
+				this.post.upvotes   = res.upvotes;
+				this.post.downvotes = res.downvotes;
+				this.localVote.set(res.userVote);
+			},
+			error: () => {
+				this.localVote.set(prev);
+				this.post.upvotes   = prevUp;
+				this.post.downvotes = prevDown;
+			},
+		});
 	}
 
 	formatDate(iso: string): string {

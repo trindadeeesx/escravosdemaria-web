@@ -1,5 +1,6 @@
 import { Routes } from "@angular/router";
 import { Callback } from "./features/auth/callback/callback";
+import { adminGuard } from "./core/guards/admin.guard";
 
 export const routes: Routes = [
 	// Auth callback — sem layout
@@ -31,6 +32,13 @@ export const routes: Routes = [
 					),
 			},
 			{
+				path: "forum/new",
+				loadComponent: () =>
+					import("./features/forum/forum-new-post/forum-new-post.component").then(
+						(m) => m.ForumNewPostComponent,
+					),
+			},
+			{
 				path: "questions",
 				loadComponent: () =>
 					import("./features/questions/questions-list/questions-list.component").then(
@@ -48,6 +56,7 @@ export const routes: Routes = [
 	// Layout admin
 	{
 		path: "admin",
+		canActivate: [adminGuard],
 		loadComponent: () => import("./layouts/admin-layout/admin-layout").then((m) => m.AdminLayout),
 		children: [
 			{ path: "", redirectTo: "moderation", pathMatch: "full" },

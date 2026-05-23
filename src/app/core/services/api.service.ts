@@ -5,10 +5,11 @@ import { catchError } from "rxjs/operators";
 import { environment } from "../../../environments/environment";
 
 export interface Page<T> {
-  content: T[];
+  items: T[];
+  page: number;
+  size: number;
+  total: number;
   totalPages: number;
-  totalElements: number;
-  number: number;
 }
 
 @Injectable({ providedIn: "root" })
@@ -25,9 +26,11 @@ export class ApiService {
       .pipe(catchError((e) => throwError(() => e)));
   }
 
-  post<T>(path: string, body: any): Observable<T> {
+  post<T>(path: string, body: any, params?: Record<string, string>): Observable<T> {
+    let p = new HttpParams();
+    if (params) Object.entries(params).forEach(([k, v]) => (p = p.set(k, v)));
     return this.http
-      .post<T>(`${this.base}${path}`, body)
+      .post<T>(`${this.base}${path}`, body, { params: p })
       .pipe(catchError((e) => throwError(() => e)));
   }
 }

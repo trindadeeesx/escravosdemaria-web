@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { tap } from "rxjs";
 import { environment } from "../../../environments/environment";
-import { MeResponse } from "../models";
+import { MeResponse, ADMIN_ROLE_IDS, ROLE_PRIORITY } from "../models";
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
@@ -14,6 +14,22 @@ export class AuthService {
   isLoggedIn = computed(() => !!this._me());
   currentUser = computed(() => this._me()?.user ?? null);
   permissions = computed(() => this._me()?.permissions ?? null);
+  isAdmin = computed(() =>
+    this._me()?.user.roles?.some((r) => ADMIN_ROLE_IDS.has(r.id)) ?? false,
+  );
+
+  // Role de maior hierarquia do usuário, pronta para exibir em qualquer lugar
+  primaryRole = computed(() => {
+    const roles = this._me()?.user.roles;
+    if (!roles?.length) return null;
+    return roles.reduce((best, current) => {
+      const bi = ROLE_PRIORITY.indexOf(best.id);
+      const ci = ROLE_PRIORITY.indexOf(current.id);
+      const bestIdx  = bi  === -1 ? Infinity : bi;
+      const currIdx  = ci  === -1 ? Infinity : ci;
+      return currIdx < bestIdx ? current : best;
+    });
+  });
 
   constructor(
     private http: HttpClient,

@@ -69,7 +69,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 
 		this.blogService.getAll(0, 10).subscribe({
 			next: (page) => {
-				this.allPosts = page.content;
+				this.allPosts = page.items;
 				this.totalPages = page.totalPages;
 				this.loading = false;
 			},
@@ -97,7 +97,7 @@ export class BlogListComponent implements OnInit, OnDestroy {
 		this.loadingMore = true;
 		this.blogService.getAll(this.currentPage + 1, 10).subscribe({
 			next: (page) => {
-				this.allPosts = [...this.allPosts, ...page.content];
+				this.allPosts = [...this.allPosts, ...page.items];
 				this.currentPage++;
 				this.loadingMore = false;
 			},

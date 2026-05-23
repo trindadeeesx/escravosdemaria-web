@@ -1,15 +1,14 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { PostCardComponent } from "../shared/components/post-card/post-card.component";
-
 import { HomeService } from "./home.service";
+import { AuthService } from "../../core/auth/auth.service";
 import { CarouselSlide } from "../../core/models/carousel.model";
 
 @Component({
 	selector: "app-home",
 	standalone: true,
-	imports: [RouterLink, CommonModule, PostCardComponent],
+	imports: [RouterLink, CommonModule],
 	templateUrl: "./home.component.html",
 	styleUrls: ["./home.component.scss"],
 })
@@ -19,7 +18,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 	private autoplayInterval: ReturnType<typeof setInterval> | null = null;
 	private readonly AUTOPLAY_DELAY = 5000;
 
-	constructor(public homeService: HomeService) {}
+	constructor(
+		public homeService: HomeService,
+		public auth: AuthService,
+	) {}
 
 	ngOnInit(): void {
 		this.homeService.loadHome();
@@ -52,12 +54,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 	}
 
 	// Computados úteis
-	get featuredPost() {
-		return this.homeData?.recentBlogPosts?.[0] ?? null;
-	}
-
-	get secondaryPosts() {
-		return this.homeData?.recentBlogPosts?.slice(1, 5) ?? [];
+	get recentPosts() {
+		return this.homeData?.recentBlogPosts?.slice(0, 4) ?? [];
 	}
 
 	get trendingForum() {
